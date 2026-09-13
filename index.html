@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techfest | IIT Bombay - An Aetherial Renaissance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #07090e;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(11, 15, 25, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #38bdf8;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        }
+
+        .logo span {
+            color: #f8fafc;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #38bdf8;
+            text-shadow: 0 0 10px #38bdf8;
+        }
+
+        .btn-portal {
+            padding: 10px 24px;
+            border: 1px solid #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn-portal:hover {
+            background: #38bdf8;
+            color: #07090e;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+
+        .edition-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid #6366f1;
+            color: #a5b4fc;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.8rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ffffff 40%, #38bdf8 80%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            font-size: 1.15rem;
+            max-width: 650px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 50px;
+        }
+
+        .btn-primary {
+            padding: 14px 34px;
+            background: linear-gradient(90deg, #0284c7, #6366f1);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-secondary {
+            padding: 14px 34px;
+            background: transparent;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+
+        /* Stats Strip */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 10px;
+        }
+
+        .stat-card {
+            background: rgba(19, 28, 46, 0.5);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            padding: 24px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #38bdf8;
+        }
+
+        .stat-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">TECHFEST <span>IITB</span></div>
+        <ul class="nav-links">
+            <li><a href="#competitions">Competitions</a></li>
+            <li><a href="#workshops">Workshops</a></li>
+            <li><a href="#exhibitions">Exhibitions</a></li>
+            <li><a href="#pronites">ProNite</a></li>
+        </ul>
+        <button class="btn-portal">Register Now</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="edition-badge">Techfest 30th Edition • Asia's Largest Science & Tech Festival</div>
+        <h1>AN AETHERIAL<br>RENAISSANCE</h1>
+        <p>Bridging antiquity and futuristic frontiers. Join 175,000+ innovators across the globe at Indian Institute of Technology Bombay.</p>
+        
+        <div class="cta-group">
+            <button class="btn-primary">Explore Competitions</button>
+            <button class="btn-secondary">Watch Aftermovie</button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-num">175K+</div>
+                <div class="stat-label">Footfall</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">₹40L+</div>
+                <div class="stat-label">Prize Pool</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">2500+</div>
+                <div class="stat-label">Colleges</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">60+</div>
+                <div class="stat-label">Countries</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2D Particle Matrix (No 3D Assets) -->
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        const numParticles = 75;
+
+        for (let i = 0; i < numParticles; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: (Math.random() - 0.5) * 0.8,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < numParticles; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+                ctx.fill();
+
+                for (let j = i + 1; j < numParticles; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${0.25 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
