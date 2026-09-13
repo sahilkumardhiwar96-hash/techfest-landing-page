@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techfest | IIT Bombay - An Aetherial Renaissance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-glow: #38bdf8;
+            --accent-purple: #818cf8;
+            --bg-dark: #06080e;
+            --panel-bg: rgba(13, 18, 30, 0.72);
+            --border-glow: rgba(56, 189, 248, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 2.5D Dynamic Parallax Background Layers */
+        .stage-viewport {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .bg-layer {
+            position: absolute;
+            inset: -40px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.1s cubic-bezier(0.1, 0.9, 0.2, 1);
+            pointer-events: none;
+        }
+
+        /* Deep Cosmic Gradient + Nebula */
+        .bg-stars {
+            background: radial-gradient(circle at 50% 30%, rgba(30, 58, 138, 0.35) 0%, transparent 70%),
+                        radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.2) 0%, transparent 60%),
+                        radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px;
+        }
+
+        /* SVG Celestial Ring Canvas */
+        #fxCanvas {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Top Angular Sci-Fi Navigation (Exact Match to Screen Recording) */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 90px;
+            right: 70px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 50;
+            background: linear-gradient(180deg, rgba(6, 9, 15, 0.9) 0%, transparent 100%);
+        }
+
+        .brand-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+            font-style: italic;
+        }
+
+        .brand-logo span {
+            color: var(--primary-glow);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Clipped Sci-Fi Polygonal Tab Shape */
+        .poly-tab {
+            position: relative;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            color: #94a3b8;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 11px 24px;
+            cursor: pointer;
+            clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 100%, 0% 100%);
+            backdrop-filter: blur(14px);
+            transition: all 0.3s ease;
+        }
+
+        .poly-tab:hover, .poly-tab.active {
+            color: #ffffff;
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.3) 0%, rgba(13, 18, 30, 0.9) 100%);
+            border-color: var(--primary-glow);
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .poly-tab .badge {
+            position: absolute;
+            top: -7px;
+            right: 8px;
+            background: #f59e0b;
+            color: #000;
+            font-size: 0.55rem;
+            font-weight: 900;
+            padding: 1px 6px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .btn-signin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f1f5f9;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 10px 22px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn-signin:hover {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            color: var(--primary-glow);
+        }
+
+        /* Left Dock Sidebar */
+        .left-dock {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 85px;
+            background: rgba(7, 10, 17, 0.85);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+        }
+
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .dock-item i {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dock-item span {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .dock-item:hover, .dock-item.active {
+            color: var(--primary-glow);
+        }
+
+        .dock-item:hover i {
+            transform: scale(1.18);
+            text-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        /* Right Social Media Column */
+        .right-social {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 65px;
+            background: rgba(7, 10, 17, 0.85);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .right-social a {
+            color: #64748b;
+            font-size: 1.15rem;
+            transition: 0.3s;
+        }
+
+        .right-social a:hover {
+            color: var(--primary-glow);
+            transform: scale(1.2);
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* Center Content Showcase */
+        .main-stage {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            margin-left: 85px;
+            margin-right: 65px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        /* Ancient Rune Ornament Above Titles */
+        .ancient-ornament {
+            width: 320px;
+            height: 30px;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-bottom: 8px;
+            opacity: 0.85;
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .view-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .view-panel.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .headline-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+            font-weight: 900;
+            letter-spacing: 5px;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-shadow: 0 0 35px rgba(255, 255, 255, 0.3), 0 0 60px rgba(56, 189, 248, 0.2);
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+
+        .sub-desc {
+            color: #cbd5e1;
+            font-size: 1.15rem;
+            max-width: 680px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #000;
+            color: #fff;
+            border: 1px solid var(--border-glow);
+            padding: 16px 42px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            border-color: var(--primary-glow);
+            background: var(--primary-glow);
+            color: #070a11;
+            box-shadow: 0 0 45px rgba(56, 189, 248, 0.7);
+            transform: scale(1.04);
+        }
+
+        /* Floating Renaissance Island Mockup Silhouette (Pure SVG/CSS - No 3D file) */
+        .island-silhouette {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 850px;
+            max-width: 90vw;
+            height: 220px;
+            background: radial-gradient(ellipse at center bottom, rgba(56, 189, 248, 0.15), transparent 70%);
+            pointer-events: none;
+            z-index: 4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 2.5D Parallax Layers -->
+    <div class="stage-viewport" id="viewport">
+        <div class="bg-layer bg-stars" id="bgStars"></div>
+        <canvas id="fxCanvas"></canvas>
+        <div class="island-silhouette"></div>
+    </div>
+
+    <!-- Left Dock Navigation -->
+    <aside class="left-dock">
+        <div class="dock-item active" onclick="switchTab('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="dock-item" onclick="switchTab('competitions')">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Events</span>
+        </div>
+        <div class="dock-item" onclick="switchTab('workshops')">
+            <i class="fa-solid fa-brain"></i>
+            <span>Ideate</span>
+        </div>
+        <div class="dock-item">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>CES</span>
+        </div>
+        <div class="dock-item">
+            <i class="fa-solid fa-phone"></i>
+            <span>Contact</span>
+        </div>
+        <div class="dock-item">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </div>
+    </aside>
+
+    <!-- Top Sci-Fi Polygonal Navbar -->
+    <header class="top-navbar">
+        <div class="brand-logo" onclick="switchTab('home')">TF<span>30</span></div>
+
+        <nav class="nav-tabs">
+            <button class="poly-tab" onclick="switchTab('accommodation')">ACCOMMODATION</button>
+            <button class="poly-tab" onclick="switchTab('workshops')">
+                <span class="badge">Early Bird</span>WORKSHOPS
+            </button>
+            <button class="poly-tab" onclick="switchTab('competitions')">COMPETITIONS</button>
+            <button class="poly-tab" onclick="switchTab('ignite')">IGNITE</button>
+        </nav>
+
+        <button class="btn-signin">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> SIGN IN
+        </button>
+    </header>
+
+    <!-- Right Social Strip -->
+    <aside class="right-social">
+        <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://x.com" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://whatsapp.com" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+    </aside>
+
+    <!-- Center Dynamic Interactive Viewport -->
+    <main class="main-stage">
+        
+        <!-- Home / Overview -->
+        <div class="view-panel" id="panel-home">
+            <svg class="ancient-ornament" viewBox="0 0 400 30" fill="none">
+                <path d="M50 15 H160 M240 15 H350 M170 15 L185 5 L200 15 L215 25 L200 15" stroke="#38bdf8" stroke-width="2"/>
+                <circle cx="200" cy="15" r="4" fill="#6366f1"/>
+            </svg>
+            <h1 class="headline-title">AN AETHERIAL<br>RENAISSANCE</h1>
+            <p class="sub-desc">Techfest, IIT Bombay's 30th Edition marks the rebirth of ancient wisdom through autonomous frontiers, cyber-realms, and next-gen engineering.</p>
+            <button class="action-button" onclick="switchTab('competitions')">
+                EXPLORE EDITIONS <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Accommodation Panel -->
+        <div class="view-panel active" id="panel-accommodation">
+            <svg class="ancient-ornament" viewBox="0 0 400 30" fill="none">
+                <path d="M50 15 H160 M240 15 H350 M170 15 L185 5 L200 15 L215 25 L200 15" stroke="#38bdf8" stroke-width="2"/>
+                <circle cx="200" cy="15" r="4" fill="#6366f1"/>
+            </svg>
+            <h1 class="headline-title">ACCOMMODATION</h1>
+            <p class="sub-desc">Accommodations will open soon. Be first to know and secure the best and cheapest availability on the IIT Bombay campus.</p>
+            <button class="action-button">
+                INTEREST FORM <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+
+        <!-- Workshops Panel -->
+        <div class="view-panel" id="panel-workshops">
+            <svg class="ancient-ornament" viewBox="0 0 400 30" fill="none">
+                <path d="M50 15 H160 M240 15 H350 M170 15 L185 5 L200 15 L215 25 L200 15" stroke="#38bdf8" stroke-width="2"/>
+                <circle cx="200" cy="15" r="4" fill="#6366f1"/>
+            </svg>
+            <h1 class="headline-title">WORKSHOPS</h1>
+            <p class="sub-desc">Hands-on certifications in Generative AI, Quantum Computing, Micro-Robotics, and Edge Telecommunications curated by industry masters.</p>
+            <button class="action-button">
+                VIEW WORKSHOPS <i class="fa-solid fa-layer-group"></i>
+            </button>
+        </div>
+
+        <!-- Competitions Panel -->
+        <div class="view-panel" id="panel-competitions">
+            <svg class="ancient-ornament" viewBox="0 0 400 30" fill="none">
+                <path d="M50 15 H160 M240 15 H350 M170 15 L185 5 L200 15 L215 25 L200 15" stroke="#38bdf8" stroke-width="2"/>
+                <circle cx="200" cy="15" r="4" fill="#6366f1"/>
+            </svg>
+            <h1 class="headline-title">COMPETITIONS</h1>
+            <p class="sub-desc">Compete across International Robowars, Mesh-Resilience Sprints, and Drone Racing for a combined cash pool exceeding ₹40 Lakhs.</p>
+            <button class="action-button">
+                REGISTER TEAM <i class="fa-solid fa-trophy"></i>
+            </button>
+        </div>
+
+        <!-- Ignite Panel -->
+        <div class="view-panel" id="panel-ignite">
+            <svg class="ancient-ornament" viewBox="0 0 400 30" fill="none">
+                <path d="M50 15 H160 M240 15 H350 M170 15 L185 5 L200 15 L215 25 L200 15" stroke="#38bdf8" stroke-width="2"/>
+                <circle cx="200" cy="15" r="4" fill="#6366f1"/>
+            </svg>
+            <h1 class="headline-title">IGNITE</h1>
+            <p class="sub-desc">The official leadership incubation summit connecting pioneering student innovators directly with venture capitals and research directors.</p>
+            <button class="action-button">
+                APPLY FOR FELLOWSHIP <i class="fa-solid fa-bolt"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Interactive Script: Parallax & Canvas Engine (No 3D Models) -->
+    <script>
+        // 1. Mouse Move 2.5D Parallax Tracking
+        const bgStars = document.getElementById('bgStars');
+        window.addEventListener('mousemove', (e) => {
+            const xOffset = (e.clientX / window.innerWidth - 0.5) * 35;
+            const yOffset = (e.clientY / window.innerHeight - 0.5) * 35;
+            bgStars.style.transform = `translate(${xOffset * 0.4}px, ${yOffset * 0.4}px)`;
+        });
+
+        // 2. Tab Navigation Switcher
+        function switchTab(tabKey) {
+            // Hide all panels
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            // Remove active states from poly tabs
+            document.querySelectorAll('.poly-tab').forEach(t => t.classList.remove('active'));
+
+            const targetPanel = document.getElementById(`panel-${tabKey}`);
+            if (targetPanel) targetPanel.classList.add('active');
+
+            // Trigger burst of energy on canvas
+            createEnergyBurst();
+        }
+
+        // 3. Canvas Aether Particle & Ring Engine
+        const canvas = document.getElementById('fxCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        let particles = [];
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -Math.random() * 0.8 - 0.2, // Ascending floating aether mist
+                size: Math.random() * 2 + 0.8,
+                alpha: Math.random() * 0.6 + 0.2
+            });
+        }
+
+        let burstRings = [];
+        function createEnergyBurst() {
+            burstRings.push({
+                x: width / 2,
+                y: height / 2,
+                radius: 20,
+                alpha: 0.8,
+                maxRadius: 360
+            });
+        }
+
+        function renderFX() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Floating luminous embers
+            for (let p of particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.y < 0) p.y = height;
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(56, 189, 248, ${p.alpha})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#38bdf8';
+                ctx.fill();
+            }
+
+            // Expanding Celestial Shockwave Rings on click
+            for (let i = burstRings.length - 1; i >= 0; i--) {
+                let r = burstRings[i];
+                r.radius += 9;
+                r.alpha *= 0.94;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(129, 140, 248, ${r.alpha})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+
+                if (r.alpha < 0.02 || r.radius > r.maxRadius) {
+                    burstRings.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(renderFX);
+        }
+        renderFX();
+    </script>
+</body>
+</html>
